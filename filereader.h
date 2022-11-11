@@ -8,8 +8,9 @@
 #include <sstream>
 #include <algorithm>
 
-void aoc_read_input(std::vector<std::string>& data, std::vector<char>& splits, bool end=true) {
+std::vector<std::string> aoc_read_input(std::vector<char> splits, bool end=true) {
     std::vector<std::string> lines;
+    std::vector<std::string> data;
     std::ifstream input_file("input.txt");
     std::string temp;
     if (input_file.is_open()) {
@@ -20,6 +21,7 @@ void aoc_read_input(std::vector<std::string>& data, std::vector<char>& splits, b
             while (ss >> temp) data.push_back(temp);
         }
     }
+    return data;
 }
 
 #endif
