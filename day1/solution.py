@@ -1,0 +1,1 @@
+with open("input.txt") as file: print((data:=file.read().split("\n\n"), calories:=list(sorted([sum([int(cal) if cal!= "" else 0 for cal in elf.split("\n")]) for elf in data], reverse=True)), p1:=calories[0], p2:=sum(calories[:3]))[2:])
