@@ -12,12 +12,11 @@ int main() {
     // P1
     std::set<std::string> wins = {"A Y", "B Z", "C X"};
     std::set<std::string> ties = {"A X", "B Y", "C Z"};
-    std::set<std::string> loses = {"A Z", "B X", "C Y"};
     
     size_t score = 0;
     for (auto& match : matches) {
         if (wins.find(match) != wins.end()) score += 6;
-        if (ties.find(match) != ties.end()) score += 3;
+        else if (ties.find(match) != ties.end()) score += 3;
         score += values[match.back()];
     }
     std::cout << score << std::endl;
@@ -30,8 +29,8 @@ int main() {
     score = 0;
     for (auto& match : matches) {
         if (match.back() == 'Z') score += 6 + values[to_win[match.front()]];
-        if (match.back() == 'Y') score += 3 + values[to_tie[match.front()]];
-        if (match.back() == 'X') score += values[to_lose[match.front()]];
+        else if (match.back() == 'Y') score += 3 + values[to_tie[match.front()]];
+        else score += values[to_lose[match.front()]];
     }
     std::cout << score << std::endl;
 
