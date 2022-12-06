@@ -1,4 +1,5 @@
-#include "../common/filereader.h"
+#include <iostream>
+#include <fstream>
 
 bool is_start(char* buffer, int n) {
     uint32_t mask = 0;
@@ -12,26 +13,20 @@ bool is_start(char* buffer, int n) {
 }
 
 int main() {
-    std::string line = aoc_read_lines_raw()[0];
-
-    // Initiate buffers
-    char buffer_p1[4], buffer_p2[14];
-    int index_p1 = 4;
-    int index_p2 = 14;
-    for (size_t i = 0; i < 4; i++) buffer_p1[i] = line[i];
-    for (size_t i = 0; i < 14; i++) buffer_p2[i] = line[i];
+    std::ifstream file("input.txt");
+    std::string line;
+    std::getline(file, line);
     
-    // P1
-    while (index_p1++) {
-        if (is_start(buffer_p1, 4)) break;
-        buffer_p1[index_p1%4] = line[index_p1];
+    int vals[] = {4,14};
+    for (size_t i = 0; i < 2; i++) {
+        int n = vals[i];
+        char buffer[n];
+        int index = n;
+        for (size_t j = 0; j < n; j++) buffer[j] = line[j];
+        while (index++) {
+            if (is_start(buffer, n)) break;
+            buffer[index%n] = line[index];
+        }
+        printf("%d\n", index);
     }
-    printf("%d\n", index_p1);
-    
-    // P2
-    while (index_p2++) {
-        if (is_start(buffer_p2, 14)) break;
-        buffer_p2[index_p2%14] = line[index_p2];
-    }
-    printf("%d\n", index_p2);
 }
