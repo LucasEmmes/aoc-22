@@ -1,0 +1,121 @@
+#include "../../common/filereader.h"
+
+#include <functional>
+#include <memory>
+#include <queue>
+
+int main(int argc, char *argv[]) {
+    std::vector<std::vector<int>> data = {
+        {52, 78, 79, 63, 51, 94},
+        {77, 94, 70, 83, 53},
+        {98, 50, 76},
+        {92, 91, 61, 75, 99, 63, 84, 69},
+        {51, 53, 83, 52},
+        {76, 76},
+        {75, 59, 93, 69, 76, 96, 65},
+        {89}
+    };
+    std::vector<std::queue<int>> monkies;
+    for (auto& q : data) {
+        monkies.push_back(std::queue<int>());
+        for (auto e : q)
+            monkies.back().push(e);
+    }
+
+    std::vector<int> business;
+
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < monkies[0].size(); j++) {
+            auto item = monkies[0][j];
+            item = item * 13;
+            item /= 3;
+            if (!item%5)
+                monkies[1].push(item);
+            else
+                monkies[6].push(item);
+            business[0]++;
+        }
+        monkies[0] = std::queue<int>();
+
+        for (auto item : monkies[1]) {
+            item = item + 3;
+            item /= 3;
+            if (!item%7)
+                monkies[5].push(item);
+            else
+                monkies[3].push(item);
+            business[1]++;
+        }
+        monkies[1] = std::queue<int>();
+
+        for (auto item : monkies[2]) {
+            item = item * item;
+            item /= 3;
+            if (!item%13)
+                monkies[0].push(item);
+            else
+                monkies[6].push(item);
+            business[2]++;
+        }
+        monkies[2] = std::queue<int>();
+
+        for (auto item : monkies[3]) {
+            item = item + 5;
+            item /= 3;
+            if (!item%11)
+                monkies[5].push(item);
+            else
+                monkies[7].push(item);
+            business[3]++;
+        }
+        monkies[3] = std::queue<int>();
+
+        for (auto item : monkies[4]) {
+            item = item + 7;
+            item /= 3;
+            if (!item%3)
+                monkies[2].push(item);
+            else
+                monkies[0].push(item);
+            business[4]++;
+        }
+        monkies[4] = std::queue<int>();
+
+        for (auto item : monkies[5]) {
+            item = item + 4;
+            item /= 3;
+            if (!item%2)
+                monkies[4].push(item);
+            else
+                monkies[7].push(item);
+            business[5]++;
+        }
+        monkies[5] = std::queue<int>();
+
+        for (auto item : monkies[6]) {
+            item = item * 19;
+            item /= 3;
+            if (!item%17)
+                monkies[1].push(item);
+            else
+                monkies[3].push(item);
+            business[6]++;
+        }
+        monkies[6] = std::queue<int>();
+
+        for (auto item : monkies[7]) {
+            item = item + 2;
+            item /= 3;
+            if (!item%19)
+                monkies[2].push(item);
+            else
+                monkies[4].push(item);
+            business[7]++;
+        }
+        monkies[7] = std::queue<int>();
+    }
+
+    std::sort(business.begin(), business.end(), std::greater<int>());
+
+    return 0;
+}

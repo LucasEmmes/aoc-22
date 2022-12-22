@@ -1,0 +1,101 @@
+#include "../../common/filereader.h"
+
+#include <functional>
+#include <memory>
+#include <queue>
+
+void split_line(std::string& line, std::vector<std::string>& collector) {
+    collector.clear();
+    std::stringstream ss(line);
+    std::string temp_str;
+    while (ss >> temp_str) collector.push_back(temp_str);
+}
+
+class Monkey{
+public:
+    uint64_t business = 0;
+    std::vector<uint64_t> items;
+    bool op_is_add = false;
+    bool op_is_self = false;
+    uint64_t op_value;
+    uint64_t divisor;
+    uint64_t monkey_true;
+    uint64_t monkey_false;
+
+    void perform_turn(std::vector<std::shared_ptr<Monkey>>& monkies) {
+        while (items.size()) {
+            uint64_t item = items.back();
+            //item = item % 9699690;
+            // Perform operation
+            if (op_is_add)
+                item = item + op_value;
+            else {
+                if (op_is_self)
+                    item = item * item;
+                else
+                    item = item * op_value;
+            }
+            // Calm down
+            item /= 3;
+            // Throw to next monkey
+            uint64_t next_monkey;
+            if (!(item % divisor))
+                next_monkey = monkey_true;
+            else
+                next_monkey = monkey_false;
+            monkies[next_monkey]->items.push_back(item);
+            items.pop_back();
+            business++;
+        }
+    }
+};
+
+int main() {
+
+    auto lines = aoc_read_lines_raw();
+    std::vector<std::shared_ptr<Monkey>> monkies;
+
+    std::vector<std::string> line;
+    for (size_t i = 0; i < lines.size(); i+=7) {
+        auto m = std::make_shared<Monkey>();
+        monkies.push_back(m);
+
+        // Get value of items
+        split_line(lines[i+1], line);
+        for (size_t j = 2; j < line.size(); j++)
+            m->items.push_back(std::stoi(line[j]));
+
+        // Get operation to perform
+        split_line(lines[i+2], line);
+        if (line[4][0] == '+') m->op_is_add = true;
+        if (line[5][0] == 'o')
+            m->op_is_self = true;
+        else
+            m->op_value = std::stoi(line[5]);
+
+        // Get test to perform
+        m->divisor = std::stoi(lines[i+3].substr(21));
+        m->monkey_true = std::stoi(lines[i+4].substr(29));
+        m->monkey_false = std::stoi(lines[i+5].substr(30));
+
+    }
+
+    for (size_t i = 0; i < 20; i++) {
+        for (auto& monkey : monkies) {
+            monkey->perform_turn(monkies);
+        }
+        printf("[");
+        for (auto& monkey : monkies) {
+            printf("[");
+            for (auto& e : monkey->items)
+                printf("%ld, ", e);
+            printf("],");
+        }
+        printf("],\n");
+    }
+
+    std::sort(monkies.begin(), monkies.end(), [](std::shared_ptr<Monkey> lhs, std::shared_ptr<Monkey> rhs)
+        {return lhs->business > rhs->business;});
+    std::cout << (monkies[0]->business * monkies[1]->business) << std::endl;
+    return 0;
+}
